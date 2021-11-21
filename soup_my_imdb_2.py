@@ -1,61 +1,44 @@
-#https://www.imdb.com/filmosearch/?explore=title_type&role=nm0000361&ref_=filmo_nxt&mode=simple&page=1&sort=user_rating,desc
-#https://www.imdb.com/filmosearch/?explore=title_type&role=nm0000229&ref_=filmo_ref_rt_usr&mode=simple&page=2&sort=user_rating,desc
+#https://www.imdb.com/filmosearch/?explore=title_type&role=nm0000233&ref_=filmo_ref_typ&mode=simple&page=1&sort=user_rating,desc&title_type=movie
 
-#https://www.imdb.com/filmosearch/?explore=title_type&role=nm0000229&ref_=filmo_ref_rt_usr&mode=simple&page=
-#1
-#&sort=user_rating,desc
+#https://www.imdb.com/filmosearch/?explore=title_type&role=nm0000233&ref_=filmo_ref_typ&mode=simple&page=1&sort=user_rating,desc&title_type=movie
 
 
-#href="/title/tt5569412/?ref_=filmo_li_tt"
-#col-imdb-rating
 import requests
 import re
 from bs4 import BeautifulSoup
 ii = 1
+film_score = []
+film_name = []
 while ii < 3:
-    URL = "https://www.imdb.com/name/nm0002031/"
-
+    nm = "nm0000233"
+    
+    startURL = "https://www.imdb.com/filmosearch/?explore=title_type&role="
+    midURL = "&ref_=filmo_ref_typ&mode=simple&page="
+    endURL = "&sort=user_rating,desc&title_type=movie"
+    
+    URL = startURL + nm + midURL + str(ii) + endURL 
     page = requests.get(URL)
 
     soup = BeautifulSoup(page.content, "html.parser")
 
-    # solo il titolo
-    title = soup.find("title").get_text()
-    #
-    title_clean = re.sub(" - IMDb", "", title)
-    print (title_clean)
+    page_coltitle = soup.find_all("div", class_="col-title")
+    page_colimdbrating = soup.find_all("div", class_="col-imdb-rating")
 
-    # title codes
-    #title_code = re.findall("tt\d{1,7}", str(title))
-
-    #films_div = soup.find_all("div", {"class":"filmo-category-section"})
-    films = []
-    ttcodes = []
-    films_row_even = soup.find_all("div", class_="filmo-row even")
-    for e in films_row_even:
-        # <a> link title codes
-        link = e.find("a").get_text()
-        # title codes
-        title_code = re.findall("tt\d{1,7}", str(e))
-        films.append(link + "," + title_code[0])
-        ttcodes.append(title_code[0])
-
-    films_row_odd = soup.find_all("div", class_="filmo-row odd")
-    for e in films_row_odd:
-        # <a> link title codes
-        link = e.find("a").get_text()
-        # title codes
-        title_code = re.findall("tt\d{1,7}", str(e))
-        films.append(link + "," + title_code[0])
-        ttcodes.append(title_code[0])
-        
-    films_no_dup = list(dict.fromkeys(films))
-    #films_no_dup_100 = del films_no_dup[100:]
-
-    for i in ttcodes:
-        print(i)
-    ii += 1
-#<span class="AggregateRatingButton__RatingScore-sc-1ll29m0-1 iTLWoV">6.6</span>
-#<span class="AggregateRatingButton__RatingScore-sc-1ll29m0-1 iTLWoV">5.0</span>
-
-
+    for e in page_coltitle:
+        try:
+            filmname = e.find("a").get_text()
+            title_code = re.findall("tt\d{1,7}", str(e))
+            film_name.append([filmname, title_code[0]])
+        except Exception as error:
+            pass
+            
+    for e in page_colimdbrating:
+        try:
+            score_strong = e.find("strong").get_text()
+            score = score_strong.replace(" ","")
+            film_score.append(score.strip())            
+        except Exception as error:
+            pass
+    ii+=1
+print(film_name)
+print(film_score)
