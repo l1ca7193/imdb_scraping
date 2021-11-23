@@ -41,4 +41,6 @@ while ii < 3:
             pass
     ii+=1
 print(film_name)
-print(film_score)
+clean_fscore = [ x for x in film_score if x != "IMDbRating" ]
+print(clean_fscore)
+
