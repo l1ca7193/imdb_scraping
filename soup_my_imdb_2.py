@@ -7,8 +7,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 ii = 1
-film_score = []
-film_name = []
+films = []
+
 while ii < 3:
     nm = "nm0000233"
     
@@ -24,24 +24,23 @@ while ii < 3:
     page_coltitle = soup.find_all("div", class_="col-title")
     page_colimdbrating = soup.find_all("div", class_="col-imdb-rating")
 
-    for e in page_coltitle:
+    for md, ti in zip(page_colimdbrating, page_coltitle):
         try:
-            filmname = e.find("a").get_text()
-            title_code = re.findall("tt\d{1,7}", str(e))
-            film_name.append([filmname, title_code[0]])
-        except Exception as error:
-            pass
-            
-    for e in page_colimdbrating:
-        try:
-            score_strong = e.find("strong").get_text()
+            score_strong = md.find("strong").get_text()
             score = score_strong.replace(" ","")
-            film_score.append(score.strip())            
+            filmname = ti.find("a").get_text()
+            title_code = re.findall("tt\d{1,7}", str(ti))
+
+            if score_strong != "IMDbRating":
+                films.append([filmname, title_code[0], score.strip()])                
+            else:
+                pass
         except Exception as error:
             pass
     ii+=1
-print(film_name)
-clean_fscore = [ x for x in film_score if x != "IMDbRating" ]
-print(clean_fscore)
+
+for e in films:
+    print(e)
+
 #end
 
