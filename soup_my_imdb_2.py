@@ -8,7 +8,7 @@ import time
 
 films = []
 
-with open("imdb_codes.txt","r") as f:
+with open("imdb_codes_short.txt","r") as f:
     lines = f.readlines()
     for line in lines:
         regista = line.strip()
@@ -26,20 +26,23 @@ with open("imdb_codes.txt","r") as f:
             page_coltitle = soup.find_all("div", class_="col-title")
             page_colimdbrating = soup.find_all("div", class_="col-imdb-rating")
 
-            for md, ti in zip(page_colimdbrating, page_coltitle):
+            for md, ti, ye in zip(page_colimdbrating, page_coltitle, page_coltitle):
                 try:
                     score_strong = md.find("strong").get_text()
                     score = score_strong.replace(" ","")
+
+                    year_span= ye.find("span", class_="lister-item-year text-muted unbold").get_text()
+                    year = re.findall("\d{4}", str(year_span))
+
                     filmname = ti.find("a").get_text()
                     title_code = re.findall("tt\d{1,7}", str(ti))
-
                     if score_strong != "IMDbRating":
-                        films.append([filmname, title_code[0], score.strip()])                
+                        films.append([filmname, title_code[0], score.strip(), year[0]])           
                     else:
                         pass
                 except Exception as error:
                     pass
-            time.sleep(10)
+            #time.sleep(5)
             ii+=1
 
 for e in films:
