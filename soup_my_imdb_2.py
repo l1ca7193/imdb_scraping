@@ -5,12 +5,18 @@ import requests
 import re
 from bs4 import BeautifulSoup
 import time
+import datetime
+import numpy
+import pandas
 
 films = []
 
+begin_time = datetime.datetime.now()
+print(datetime.datetime.now())
 with open("imdb_codes_short.txt","r") as f:
     lines = f.readlines()
     for line in lines:
+        begin_time = datetime.datetime.now()
         regista = line.strip()
         ii = 1
         while ii < 3:
@@ -42,11 +48,8 @@ with open("imdb_codes_short.txt","r") as f:
                         pass
                 except Exception as error:
                     pass
-            #time.sleep(5)
+            time.sleep(5)
             ii+=1
+        print(regista + " " + str(datetime.datetime.now() - begin_time))
 
-for e in films:
-    print(e)
-
-#end
-
+pandas.DataFrame(films).to_csv('films.csv', index_label = "Index", header  = ['film name','title code','score', 'year'])    
