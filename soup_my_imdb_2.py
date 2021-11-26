@@ -17,14 +17,20 @@ with open("imdb_codes.txt","r") as f:
     lines = f.readlines()
     for id, line in enumerate(lines):
         begin_time = datetime.datetime.now()
-        regista = line.strip()
+        codiceRegista = line.strip()
+        URL = "https://www.imdb.com/name/" + codiceRegista
+        page = requests.get(URL)
+        soup = BeautifulSoup(page.content, "html.parser")
+        regista = soup.find("title").get_text()
+        regista_clean = re.sub(" - IMDb", "", regista)
+
         ii = 1
         while ii < 3:
             startURL = "https://www.imdb.com/filmosearch/?explore=title_type&role="
             midURL = "&ref_=filmo_ref_typ&mode=simple&page="
             endURL = "&sort=user_rating,desc&title_type=movie"
             
-            URL = startURL + regista + midURL + str(ii) + endURL 
+            URL = startURL + codiceRegista + midURL + str(ii) + endURL 
             page = requests.get(URL)
 
             soup = BeautifulSoup(page.content, "html.parser")
@@ -43,13 +49,13 @@ with open("imdb_codes.txt","r") as f:
                     filmname = ti.find("a").get_text()
                     title_code = re.findall("tt\d{1,7}", str(ti))
                     if score_strong != "IMDbRating":
-                        films.append([regista, filmname, title_code[0], score.strip(), year[0]])           
+                        films.append([regista, codiceRegista, filmname, title_code[0], score.strip(), year[0]])           
                     else:
                         pass
                 except Exception as error:
                     pass
             time.sleep(6)
             ii+=1
-        print(str(id+1)+ " " + regista + " " + str(datetime.datetime.now() - begin_time))
+        print(str(id+1)+ " " + codiceRegista + " " + str(datetime.datetime.now() - begin_time))
 
-pandas.DataFrame(films).to_csv('films226.csv', index_label = "Index", header  = ['director name','film name','title code','score', 'year'])    
+pandas.DataFrame(films).to_csv('films226_directors.csv', index_label = "Index", header  = ['director name','director code','film name','title code','score', 'year'])    
