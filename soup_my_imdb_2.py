@@ -13,9 +13,9 @@ films = []
 
 begin_time = datetime.datetime.now()
 print(datetime.datetime.now())
-with open("imdb_codes_short.txt","r") as f:
+with open("imdb_codes.txt","r") as f:
     lines = f.readlines()
-    for line in lines:
+    for id, line in enumerate(lines):
         begin_time = datetime.datetime.now()
         regista = line.strip()
         ii = 1
@@ -43,13 +43,13 @@ with open("imdb_codes_short.txt","r") as f:
                     filmname = ti.find("a").get_text()
                     title_code = re.findall("tt\d{1,7}", str(ti))
                     if score_strong != "IMDbRating":
-                        films.append([filmname, title_code[0], score.strip(), year[0]])           
+                        films.append([regista, filmname, title_code[0], score.strip(), year[0]])           
                     else:
                         pass
                 except Exception as error:
                     pass
-            time.sleep(5)
+            time.sleep(6)
             ii+=1
-        print(regista + " " + str(datetime.datetime.now() - begin_time))
+        print(str(id+1)+ " " + regista + " " + str(datetime.datetime.now() - begin_time))
 
-pandas.DataFrame(films).to_csv('films.csv', index_label = "Index", header  = ['film name','title code','score', 'year'])    
+pandas.DataFrame(films).to_csv('films226.csv', index_label = "Index", header  = ['director name','film name','title code','score', 'year'])    
