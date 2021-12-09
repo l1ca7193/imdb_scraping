@@ -16,6 +16,7 @@ with open("registi.list","r") as f:
                                 ff.write(regista+","+"https://www.imdb.com/name/"+code[0]+"\n")
                 except:
                         print("The query is empty")
+                # TIME SLEEP IS A MUST OR GOOGLE WILL SEND YOU TO HORNY JAIL
                 stop = randint(100,200)
                 print("I'm sleeping for "+str(stop)+"s")
                 time.sleep(stop)
