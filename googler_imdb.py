@@ -2,6 +2,10 @@ import subprocess
 import re
 from random import randint
 import time
+import os
+
+if "Output" not in os.listdir("."):
+    os.mkdir("Output")
 
 with open("Input/Directors.list", "r") as _R:
     with open("Output/imdb_urls.txt", "w") as _W:

@@ -1,15 +1,14 @@
-#https://www.imdb.com/filmosearch/?explore=title_type&role=nm0000233&ref_=filmo_ref_typ&mode=simple&page=1&sort=user_rating,desc&title_type=movie
-#https://www.imdb.com/filmosearch/?explore=title_type&role=nm0000233&ref_=filmo_ref_typ&mode=simple&page=1&sort=user_rating,desc&title_type=movie
-
 import requests
 import re
 from bs4 import BeautifulSoup
 import time
 import csv
+import os
 
-films = []
+if "Output" not in os.listdir("."):
+    os.mkdir("Output")
 
-csv_file = open("Output/films226_directors.csv", "w", encoding="utf8", newline="\n")
+csv_file = open("Output/DirectorsMoviesData.csv", "w", encoding="utf8", newline="\n")
 csv_writer = csv.writer(csv_file, delimiter=",", quotechar="\"", quoting=csv.QUOTE_MINIMAL)
 
 csv_writer.writerow(['DirectorName', 'DirectorCode', 'MovieName', 'MovieCode', 'Score', 'Year'])
